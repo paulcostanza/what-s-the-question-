@@ -1,0 +1,30 @@
+ body {
+     font-family: sans-serif;
+     text-align: center;
+     background: #222;
+     color: #fff;
+     padding: 50px;
+ }
+
+ #question {
+     font-size: 3em;
+     margin-bottom: 50px;
+     color: #ffeb3b;
+ }
+
+ #leaderboard {
+     max-width: 400px;
+     margin: 0 auto;
+     text-align: left;
+     font-size: 1.5em;
+     background: #333;
+     padding: 20px;
+     border-radius: 10px;
+ }
+
+ .player-row {
+     display: flex;
+     justify-content: space-between;
+     padding: 5px 0;
+     border-bottom: 1px solid #444;
+ }

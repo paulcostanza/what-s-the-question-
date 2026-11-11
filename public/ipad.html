@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trivia Board (iPad)</title>
+    <link rel="stylesheet" href="ipad.css">
+</head>
+
+<body>
+
+    <div id="question">Loading Question...</div>
+
+    <h2>Leaderboard</h2>
+    <div id="leaderboard">No players connected yet.</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+
+        socket.on('state_update', (state) => {
+            document.getElementById('question').innerText = state.currentQuestion
+
+            const board = document.getElementById('leaderboard')
+            const playersArray = Object.values(state.players)
+
+            if (playersArray.length === 0) {
+                board.innerHTML = "No players connected yet."
+                return
+            }
+
+            // Sort players highest score first
+            playersArray.sort((a, b) => b.score - a.score)
+
+            // Render leaderboard rows
+            board.innerHTML = ''
+            playersArray.forEach(player => {
+                board.innerHTML += `
+                    <div class="player-row">
+                        <span>${player.name}</span>
+                        <span>${player.score} pts</span>
+                    </div>
+                `
+            })
+        })
+    </script>
+</body>
+
+</html>

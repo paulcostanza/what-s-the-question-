@@ -1,0 +1,43 @@
+ body {
+     font-family: sans-serif;
+     text-align: center;
+     padding: 20px;
+ }
+
+ #joinScreen {
+     margin-top: 50px;
+ }
+
+ #gameScreen {
+     display: none;
+ }
+
+ input {
+     padding: 10px;
+     font-size: 1.2em;
+     width: 80%;
+     margin-bottom: 10px;
+ }
+
+ button {
+     padding: 15px;
+     font-size: 1.2em;
+     width: 84%;
+ }
+
+ #buzzer {
+     width: 200px;
+     height: 200px;
+     border-radius: 50%;
+     background: #f44336;
+     color: white;
+     font-size: 2em;
+     border: none;
+     font-weight: bold;
+     margin-top: 40px;
+ }
+
+ #buzzer:disabled {
+     background: #9e9e9e;
+     opacity: 0.6;
+ }

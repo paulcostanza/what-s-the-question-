@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trivia Player</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <!-- SCREEN 1: Enter Name -->
+    <div id="joinScreen">
+        <h2>Enter Your Name</h2>
+        <input type="text" id="username" placeholder="Name...">
+        <br>
+        <button onclick="joinGame()">Join Game</button>
+    </div>
+
+    <!-- SCREEN 2: The Buzzer -->
+    <div id="gameScreen">
+        <h2 id="greeting">Active</h2>
+        <button id="buzzer" onclick="buzz()" disabled>LOCKED</button>
+        <p id="statusMsg">Waiting for host...</p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function joinGame() {
+            const name = document.getElementById('username').value;
+            if (name) {
+                socket.emit('player_join', name);
+                document.getElementById('joinScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+                document.getElementById('greeting').innerText = `Player: ${name}`;
+            }
+        }
+
+        function buzz() {
+            socket.emit('player_buzz');
+        }
+
+        // Listen for game updates from the server
+        socket.on('state_update', (state) => {
+            const buzzerBtn = document.getElementById('buzzer');
+            const msg = document.getElementById('statusMsg');
+
+            if (state.buzzerLocked) {
+                buzzerBtn.disabled = true;
+                if (state.activeBuzzer && state.activeBuzzer.id === socket.id) {
+                    buzzerBtn.innerText = "BUZZED!";
+                    msg.innerText = "You got it! Answer the host.";
+                } else if (state.activeBuzzer) {
+                    buzzerBtn.innerText = "LOCKED";
+                    msg.innerText = `${state.activeBuzzer.name} buzzed first!`;
+                } else {
+                    buzzerBtn.innerText = "LOCKED";
+                    msg.innerText = "Wait for the host to open buzzers.";
+                }
+            } else {
+                buzzerBtn.disabled = false;
+                buzzerBtn.innerText = "BUZZ!";
+                msg.innerText = "GO GO GO!";
+            }
+        });
+    </script>
+</body>
+
+</html>

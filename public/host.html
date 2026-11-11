@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Host Panel</title>
+    <link rel="stylesheet" href="host.css">
+</head>
+
+<body>
+
+    <h1>Host Controller</h1>
+    <input type="text" id="questionInput" placeholder="Type a trivia question here...">
+    <button class="blue" onclick="sendQuestion()">Send & Open Buzzers</button>
+
+    <!-- This panel handles scoring when a player buzzes -->
+    <div id="judgePanel">
+        <h2 id="buzzerWinner">Nobody</h2>
+        <button class="green" onclick="judge(true)">Correct (+10 pts)</button>
+        <button class="red" onclick="judge(false)">Incorrect / Clear</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function sendQuestion() {
+            const text = document.getElementById('questionInput').value;
+            if (text) {
+                socket.emit('host_new_question', text);
+                document.getElementById('questionInput').value = '';
+            }
+        }
+
+        function judge(isCorrect) {
+            socket.emit('host_judge', isCorrect);
+        }
+
+        // Show judging buttons only when someone has actively buzzed
+        socket.on('state_update', (state) => {
+            const panel = document.getElementById('judgePanel');
+            const winnerText = document.getElementById('buzzerWinner');
+
+            if (state.activeBuzzer) {
+                winnerText.innerText = `🚨 ${state.activeBuzzer.name} Buzzed In!`;
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
